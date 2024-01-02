@@ -8,29 +8,34 @@
 <body>
 
   <script>
-    window.onload = function() {
-      const webhookUrl = getUrlParameter('webhook'); // Get webhook URL from query parameter
-      const jsonData = { "key": "value" }; // Replace with your JSON data
+    const webhookUrl = getUrlParameter('webhook'); // Get webhook URL from query parameter
+    const jsonData = { "key": "value" }; // Replace with your JSON data
 
-      if (!webhookUrl) {
-        console.error('Webhook URL not provided in the query parameters.');
-        return;
+    if (!webhookUrl) {
+      console.error('Webhook URL not provided in the query parameters.');
+    } else {
+      const newTab = window.open('about:blank', '_blank');
+      if (newTab) {
+        newTab.document.write('<html><head><title>Loading...</title></head><body>Loading...</body></html>');
+
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
+          .then(response => response.json())
+          .then(data => console.log('Webhook response:', data))
+          .catch(error => console.error('Error triggering webhook:', error))
+          .finally(() => {
+            // Close the tab after a delay (adjust the timeout value as needed)
+            setTimeout(() => newTab.close(), 1000);
+          });
+      } else {
+        console.error('Unable to open a new tab.');
       }
-
-      fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
-        .then(response => response.json())
-        .then(data => console.log('Webhook response:', data))
-        .catch(error => console.error('Error triggering webhook:', error));
-
-      // Close the tab after triggering the webhook
-      window.close();
-    };
+    }
 
     function getUrlParameter(name) {
       const urlParams = new URLSearchParams(window.location.search);
