@@ -6,10 +6,9 @@
   <title>Webhook Trigger</title>
 </head>
 <body>
-  <button id="triggerButton">Trigger Webhook</button>
 
   <script>
-    document.getElementById('triggerButton').addEventListener('click', function() {
+    window.onload = function() {
       const webhookUrl = getUrlParameter('webhook'); // Get webhook URL from query parameter
       const jsonData = { "key": "value" }; // Replace with your JSON data
 
@@ -28,7 +27,10 @@
         .then(response => response.json())
         .then(data => console.log('Webhook response:', data))
         .catch(error => console.error('Error triggering webhook:', error));
-    });
+
+      // Close the tab after triggering the webhook
+      window.close();
+    };
 
     function getUrlParameter(name) {
       const urlParams = new URLSearchParams(window.location.search);
