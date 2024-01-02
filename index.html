@@ -10,7 +10,12 @@
   <script>
     window.onload = function() {
       const webhookUrl = getUrlParameter('webhook'); // Get webhook URL from query parameter
-      const jsonData = { "key": "value" }; // Replace with your JSON data
+      const jsonData = {
+        key1: getUrlParameter('key1') || '',
+        key2: getUrlParameter('key2') || '',
+        key3: getUrlParameter('key3') || '',
+        key4: getUrlParameter('key4') || '',
+      };
 
       if (!webhookUrl) {
         console.error('Webhook URL not provided in the query parameters.');
@@ -27,9 +32,6 @@
         .then(response => response.json())
         .then(data => console.log('Webhook response:', data))
         .catch(error => console.error('Error triggering webhook:', error));
-
-      // Close the tab after triggering the webhook
-      window.close();
     };
 
     function getUrlParameter(name) {
