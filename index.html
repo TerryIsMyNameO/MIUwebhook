@@ -14,21 +14,24 @@
     if (!webhookUrl) {
       console.error('Webhook URL not provided in the query parameters.');
     } else {
-      // Trigger the webhook
-      fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
-      })
-        .then(response => response.json())
-        .then(data => console.log('Webhook response:', data))
-        .catch(error => console.error('Error triggering webhook:', error))
-        .finally(() => {
-          // Close the tab after a delay (adjust the timeout value as needed)
-          setTimeout(() => window.close(), 1000);
-        });
+      // Open the pop-up in a new tab
+      const popup = window.open('about:blank', 'Webhook Popup', 'width=1,height=1,left=-100,top=-100');
+
+      if (popup) {
+        // Trigger the webhook
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        })
+          .then(response => response.json())
+          .then(data => console.log('Webhook response:', data))
+          .catch(error => console.error('Error triggering webhook:', error));
+      } else {
+        console.error('Unable to open a pop-up.');
+      }
     }
 
     function getUrlParameter(name) {
