@@ -4,12 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Webhook Trigger</title>
+  <style>
+    #messageContainer {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    #successMessage {
+      color: green;
+    }
+
+    #errorMessage {
+      color: red;
+    }
+  </style>
 </head>
 <body>
+  <div id="messageContainer">
+    <div id="successMessage"></div>
+    <div id="errorMessage"></div>
+  </div>
+
   <button onclick="window.close()">Close Window</button>
 
   <script>
     window.onload = function() {
+      const messageContainer = document.getElementById('messageContainer');
+      const successMessage = document.getElementById('successMessage');
+      const errorMessage = document.getElementById('errorMessage');
+
       const webhookUrl = getUrlParameter('webhook'); // Get webhook URL from query parameter
       const jsonData = {
         key1: getUrlParameter('key1') || '',
@@ -19,7 +43,7 @@
       };
 
       if (!webhookUrl) {
-        console.error('Webhook URL not provided in the query parameters.');
+        errorMessage.textContent = 'Webhook URL not provided in the query parameters.';
         return;
       }
 
@@ -31,8 +55,12 @@
         body: JSON.stringify(jsonData),
       })
         .then(response => response.json())
-        .then(data => console.log('Webhook response:', data))
-        .catch(error => console.error('Error triggering webhook:', error));
+        .then(data => {
+          successMessage.textContent = 'Webhook successfully triggered. Response: ' + JSON.stringify(data);
+        })
+        .catch(error => {
+          errorMessage.textContent = 'Error triggering webhook: ' + error.message;
+        });
     };
 
     function getUrlParameter(name) {
