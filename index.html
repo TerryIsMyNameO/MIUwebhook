@@ -58,7 +58,8 @@
           if (!response.ok) {
             throw new Error('Network response was not ok: ' + response.status);
           }
-          return response.json();
+          // Check if the response body is not empty before attempting to parse JSON
+          return response.text().then(text => text ? JSON.parse(text) : {});
         })
         .then(data => {
           if (data) {
