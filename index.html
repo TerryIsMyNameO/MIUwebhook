@@ -58,8 +58,15 @@
           if (!response.ok) {
             throw new Error('Network response was not ok: ' + response.status);
           }
-          // Check if the response body is not empty before attempting to parse JSON
-          return response.text().then(text => text ? JSON.parse(text) : {});
+
+          // Check if the response has a content type of JSON
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            return response.json();
+          } else {
+            // If not JSON, consider it as an empty response
+            return {};
+          }
         })
         .then(data => {
           if (data) {
